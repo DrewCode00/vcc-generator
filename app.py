@@ -71,12 +71,11 @@ class Moon:
         suc , card =await self.get_active_card()
         if suc:
             await self.delete_card(card)
-        response = await self.__request('POST',"getdepositaddress",{"amount":f"{amount}.00","applyRewardSats":False,"applyUsdCredit":True,"cardProduct":"CREDIT_CARD_PRODUCT"})
+        response = await self.__request('POST',"api/cards/funding/onchain",{"cardValue":f"{amount}.00","applyRewardSats":False,"applyMoonCredit":True,"currency":"BTC","cardProduct":"CREDIT_CARD_PRODUCT","blockchain":"BITCOIN","coin":"BTC"})
         try:
-            response = response['card']
             return True,response["pan"] , response["exp"][:2] + "/" + response["exp"][2:],response["cvv"],response['expirationTime']
         except:
-            return [True,None , None,None,None]
+            return [False,None , None,None,None]
     # @is_authed
     async def get_transactions(self):
         resp = await self.__request('post',"transactions?currentPage=1&perPage=10")
